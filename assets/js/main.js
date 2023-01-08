@@ -7,11 +7,27 @@ let pieChartRef = null
 function generateChart(canvasId, chartType, labels, data) {
 	const ctx = document.getElementById(canvasId);
 	let datasetObj = {
-		label: "",
+		label: "Change(%)",
 		data,
 		borderWidth: 1,
-		borderColor: '#4fa060',
-		backgroundColor: '#4fa060',
+		borderColor: function(context) {
+			var index = context.dataIndex;
+			var value = context.dataset.data[index];
+			if(chartType === "bar"){ //set red color for negative values for bar chart
+				return value > 0 ? '#4fa060' : '#ff4a4a';
+			}else{
+				return '#4fa060';
+			}
+		},
+		backgroundColor: function(context) {
+			var index = context.dataIndex;
+			var value = context.dataset.data[index];
+			if(chartType === "bar"){ //set red color for negative values for bar chart
+				return value > 0 ? '#4fa060' : '#ff4a4a';
+			}else{
+				return '#4fa060';
+			}
+		},
 	}
 	if(chartType === "pie"){ //for pie chart remove custom borderColor and backgroundColor and use default
 		delete datasetObj.borderColor
@@ -63,7 +79,7 @@ async function fetchCryptoList() {
 		$(".table-loader").removeClass("d-none")
 		//fetch crypto prices using axios from coinapi REST API
 		//https://sandbox-api.coinmarketcap.com
-		const resp = await axios.get("https://pro-api.coinmarketcap.com/v1/cryptocurrency/listings/latest", {
+		const resp = await axios.get("https://sandbox-api.coinmarketcap.com/v1/cryptocurrency/listings/latest", {
 			headers: {
 				"X-CMC_PRO_API_KEY": "f5c41f87-276c-4f7f-8beb-8fa0e59949de"
 			}
@@ -94,7 +110,7 @@ async function fetchCryptoList() {
 				}
 			);
 			const labels = cryptoData.map(d => d.name)
-			const data = cryptoData.map(d => d.quote?.USD?.price)
+			const data = cryptoData.map(d => d.quote?.USD?.percent_change_1h)
 			//generating bar chart
 			generateChart("bar_chart", "bar", labels, data)
 			//generating line chart
@@ -139,7 +155,7 @@ $("#search_text").keyup(function (event) {
 		tempData = cryptoData
 	}
 	const labels = tempData.map(d => d.name)
-	const data = tempData.map(d => d.quote?.USD?.price)
+	const data = tempData.map(d => d.quote?.USD?.percent_change_1h)
 	//update table data
 	setTableData(tempData)
 	//update bar chart
