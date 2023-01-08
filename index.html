@@ -69,12 +69,12 @@
 								<th scope="col">Ticker</th>
 								<th scope="col">Price</th>
 								<th scope="col">24h Volume</th>
-								<th scope="col">1h Change(%)</th>
+								<th scope="col">Change(%)</th>
 							</tr>
 						</thead>
 						<tbody>
 							<tr>
-								<td colspan="2" class="text-center table-loader">
+								<td colspan="4" class="text-center table-loader">
 									<div class="spinner-border text-light" role="status"></div>
 								</td>
 							</tr>
@@ -91,6 +91,28 @@
 			</div>
 			<!-- TradingView Widget END -->
 		</div>
+		<div class="row mt-5">
+			<!-- ChartJS section start -->
+			<nav>
+				<div class="nav nav-tabs" id="nav-tab" role="tablist">
+					<button class="nav-link active" id="nav-bar-chart" data-bs-toggle="tab" data-bs-target="#nav-home" type="button" role="tab" aria-controls="nav-home" aria-selected="true">Bar Chart</button>
+					<button class="nav-link" id="nav-line-chart" data-bs-toggle="tab" data-bs-target="#nav-profile" type="button" role="tab" aria-controls="nav-profile" aria-selected="false">Line Chart</button>
+					<button class="nav-link" id="nav-pie-chart" data-bs-toggle="tab" data-bs-target="#nav-contact" type="button" role="tab" aria-controls="nav-contact" aria-selected="false">Pie Chart</button>
+				</div>
+			</nav>
+			<div class="tab-content" id="nav-tabContent">
+				<div class="tab-pane fade show active" id="nav-home" role="tabpanel" aria-labelledby="nav-bar-chart">
+					<canvas id="bar_chart"></canvas>
+				</div>
+				<div class="tab-pane fade" id="nav-profile" role="tabpanel" aria-labelledby="nav-line-chart">
+					<canvas id="line_chart"></canvas>
+				</div>
+				<div class="tab-pane fade" id="nav-contact" role="tabpanel" aria-labelledby="nav-area-chart">
+					<canvas id="pie_chart"></canvas>
+				</div>
+			</div>
+		</div>
+		<!-- ChartJS section start -->
 	</div>
 	<!-- Main body end -->
 
@@ -109,6 +131,8 @@
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.2.2/axios.min.js" integrity="sha512-QTnb9BQkG4fBYIt9JGvYmxPpd6TBeKp6lsUrtiVQsrJ9sb33Bn9s0wMQO9qVBFbPX3xHRAsBHvXlcsrnJjExjg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 	<!-- FontAwesome icon -->
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.1/js/all.min.js" integrity="sha512-rpLlll167T5LJHwp0waJCh3ZRf7pO6IT1+LZOhAyP6phAirwchClbTZV3iqL3BMrVxIYRbzGTpli4rfxsCK6Vw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+	<!-- ChartJS -->
+	<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 	<!-- Custom JS script -->
 	<script src="assets/js/main.js"></script>
 </body>

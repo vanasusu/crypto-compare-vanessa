@@ -1,6 +1,6 @@
 
 let cryptoData = []
-function setTableData(rows){ //function to feed table rows with data
+function setTableData(rows) { //function to feed table rows with data
 	$("#crypTable tbody").empty(); //delete existing table rows
 	$.each(rows, function (i, item) {
 		const change = item.quote?.USD?.percent_change_1h
@@ -13,6 +13,36 @@ function setTableData(rows){ //function to feed table rows with data
 		);
 		$tr.wrap('<p>').html();
 		$tr.appendTo('#crypTable')
+	});
+}
+function generateChart(canvasId, chartType, labels, data) {
+	const ctx = document.getElementById(canvasId);
+	let datasetObj = {
+		label: "",
+		data,
+		borderWidth: 1,
+		borderColor: '#4fa060',
+		backgroundColor: '#4fa060',
+	}
+	if(chartType === "pie"){
+		delete datasetObj.borderColor
+		delete datasetObj.backgroundColor
+	}
+	new Chart(ctx, {
+		type: chartType,
+		data: {
+			labels,
+			datasets: [datasetObj]
+		},
+		options: {
+			responsive: true,
+			maintainAspectRatio: false,
+			scales: {
+				y: {
+					beginAtZero: true
+				}
+			}
+		}
 	});
 }
 async function fetchCryptoList() {
@@ -28,7 +58,7 @@ async function fetchCryptoList() {
 		}) //use of async await
 		if (Array.isArray(resp.data?.data) && resp.data?.data?.length) { //check if we have valid response as array
 			cryptoData = [...resp.data.data]
-			
+
 			//append rows in the table
 			setTableData(cryptoData)
 			//hide loading after loading of data
@@ -49,6 +79,11 @@ async function fetchCryptoList() {
 					"container_id": "tradingview_main"
 				}
 			);
+			const labels = cryptoData.map(d => d.name)
+			const data = cryptoData.map(d => d.quote?.USD?.price)
+			generateChart("bar_chart", "bar", labels, data)
+			generateChart("line_chart", "line", labels, data)
+			generateChart("pie_chart", "pie", labels.slice(0, 20), data.slice(0, 20))
 		}
 	} catch (err) {
 
@@ -77,13 +112,13 @@ $('#crypTable').on('click', 'tbody tr', function (event) {
 	);
 	$(this).addClass('highlight').siblings().removeClass('highlight');
 });
-$("#search_text").keyup(function(event) {
-  let text = $(this).val();
+$("#search_text").keyup(function (event) {
+	let text = $(this).val();
 	let tempData = []
-	if(text.length){
+	if (text.length) {
 		const filteredData = cryptoData.filter(d => d.name.toLowerCase().includes(text.toLowerCase()))
 		tempData = filteredData
-	}else{
+	} else {
 		tempData = cryptoData
 	}
 	setTableData(tempData)
