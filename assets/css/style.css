@@ -17,6 +17,11 @@ body {
   color: #fff;
   border-bottom-width: 0
 }
+#crypTable thead th { 
+  position: sticky; 
+  top: 0;
+  z-index: 1; 
+}
 .table tbody tr.highlight {
   border: 1px solid;
 }
@@ -37,4 +42,10 @@ canvas{
 footer {
   background: #212529;
   color: #9b9d9e;
+}
+a {
+  color: #4fa060;
+}
+a:hover {
+  color: #4fa060;
 }
