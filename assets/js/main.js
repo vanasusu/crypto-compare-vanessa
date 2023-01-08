@@ -1,20 +1,8 @@
 
 let cryptoData = []
-function setTableData(rows) { //function to feed table rows with data
-	$("#crypTable tbody").empty(); //delete existing table rows
-	$.each(rows, function (i, item) {
-		const change = item.quote?.USD?.percent_change_1h
-		let $tr = $(`<tr class="${i == 0 ? "highlight" : ""}">`).append(
-			$('<td>').text(item.name),
-			$('<td class="price">').text(`$${item.quote?.USD?.price?.toFixed(2)}`),
-			$('<td class="volume">').text(`${item.quote?.USD?.volume_24h?.toFixed(2)}`),
-			$(`<td class="change_percentage ${change > 0 ? "text-success" : "text-danger"}">`).text(`${change?.toFixed(2)}%`), //change color based on percentage change
-			$('<td class="ticker d-none">').text(item.symbol),
-		);
-		$tr.wrap('<p>').html();
-		$tr.appendTo('#crypTable')
-	});
-}
+let barChartRef = null
+let lineChartRef = null
+let pieChartRef = null
 function generateChart(canvasId, chartType, labels, data) {
 	const ctx = document.getElementById(canvasId);
 	let datasetObj = {
@@ -28,7 +16,7 @@ function generateChart(canvasId, chartType, labels, data) {
 		delete datasetObj.borderColor
 		delete datasetObj.backgroundColor
 	}
-	new Chart(ctx, {
+	const _chart = new Chart(ctx, {
 		type: chartType,
 		data: {
 			labels,
@@ -43,6 +31,28 @@ function generateChart(canvasId, chartType, labels, data) {
 				}
 			}
 		}
+	});
+	if(chartType === "bar"){
+		barChartRef = _chart
+	}else if(chartType === "line"){
+		lineChartRef = _chart
+	}else if(chartType === "pie"){
+		pieChartRef = _chart
+	}
+}
+function setTableData(rows) { //function to feed table rows with data
+	$("#crypTable tbody").empty(); //delete existing table rows
+	$.each(rows, function (i, item) {
+		const change = item.quote?.USD?.percent_change_1h
+		let $tr = $(`<tr class="${i == 0 ? "highlight" : ""}">`).append(
+			$('<td>').text(item.name),
+			$('<td class="price">').text(`$${item.quote?.USD?.price?.toFixed(2)}`),
+			$('<td class="volume">').text(`${item.quote?.USD?.volume_24h?.toFixed(2)}`),
+			$(`<td class="change_percentage ${change > 0 ? "text-success" : "text-danger"}">`).text(`${change?.toFixed(2)}%`), //change color based on percentage change
+			$('<td class="ticker d-none">').text(item.symbol),
+		);
+		$tr.wrap('<p>').html();
+		$tr.appendTo('#crypTable')
 	});
 }
 async function fetchCryptoList() {
@@ -61,6 +71,8 @@ async function fetchCryptoList() {
 
 			//append rows in the table
 			setTableData(cryptoData)
+			$('#crypTable').prepend($('<tr><td colspan="4" class="text-center table-loader"><div class="spinner-border text-light" role="status"></div></td></tr>'));
+			
 			//hide loading after loading of data
 			$(".table-loader").addClass("d-none")
 			//load tradingview chart with the first ticker
@@ -121,5 +133,19 @@ $("#search_text").keyup(function (event) {
 	} else {
 		tempData = cryptoData
 	}
+	const labels = tempData.map(d => d.name)
+	const data = tempData.map(d => d.quote?.USD?.price)
 	setTableData(tempData)
+	//update bar chart
+	barChartRef.data.labels = labels;
+	barChartRef.data.datasets[0].data = data;
+	barChartRef.update();
+	//update line chart
+	lineChartRef.data.labels = labels;
+	lineChartRef.data.datasets[0].data = data;
+	lineChartRef.update();
+	//update pie chart
+	pieChartRef.data.labels = labels;
+	pieChartRef.data.datasets[0].data = data;
+	pieChartRef.update();
 });
