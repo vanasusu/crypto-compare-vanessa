@@ -1,5 +1,20 @@
 
 let cryptoData = []
+function setTableData(rows){ //function to feed table rows with data
+	$("#crypTable tbody").empty(); //delete existing table rows
+	$.each(rows, function (i, item) {
+		const change = item.quote?.USD?.percent_change_1h
+		let $tr = $(`<tr class="${i == 0 ? "highlight" : ""}">`).append(
+			$('<td>').text(item.name),
+			$('<td class="price">').text(`$${item.quote?.USD?.price?.toFixed(2)}`),
+			$('<td class="volume">').text(`${item.quote?.USD?.volume_24h?.toFixed(2)}`),
+			$(`<td class="change_percentage ${change > 0 ? "text-success" : "text-danger"}">`).text(`${change?.toFixed(2)}%`), //change color based on percentage change
+			$('<td class="ticker d-none">').text(item.symbol),
+		);
+		$tr.wrap('<p>').html();
+		$tr.appendTo('#crypTable')
+	});
+}
 async function fetchCryptoList() {
 	try {
 		//show loading
@@ -15,18 +30,7 @@ async function fetchCryptoList() {
 			cryptoData = [...resp.data.data]
 			
 			//append rows in the table
-			$.each(cryptoData, function (i, item) {
-				const change = item.quote?.USD?.percent_change_1h
-				let $tr = $(`<tr class="${i == 0 ? "highlight" : ""}">`).append(
-					$('<td>').text(item.name),
-					$('<td class="price">').text(`$${item.quote?.USD?.price?.toFixed(2)}`),
-					$('<td class="volume">').text(`${item.quote?.USD?.volume_24h?.toFixed(2)}`),
-					$(`<td class="change_percentage ${change > 0 ? "text-success" : "text-danger"}">`).text(`${change?.toFixed(2)}%`), //change color based on percentage change
-					$('<td class="ticker d-none">').text(item.symbol),
-				);
-				$tr.wrap('<p>').html();
-				$tr.appendTo('#crypTable')
-			});
+			setTableData(cryptoData)
 			//hide loading after loading of data
 			$(".table-loader").addClass("d-none")
 			//load tradingview chart with the first ticker
@@ -77,9 +81,10 @@ $("#search_text").keyup(function(event) {
   let text = $(this).val();
 	let tempData = []
 	if(text.length){
-
-		console.log(cryptoData.filter(d => d.asset_id_base.toLowerCase().includes(text.toLowerCase())))
+		const filteredData = cryptoData.filter(d => d.name.toLowerCase().includes(text.toLowerCase()))
+		tempData = filteredData
 	}else{
 		tempData = cryptoData
 	}
+	setTableData(tempData)
 });
