@@ -1,27 +1,28 @@
 
+let cryptoData = []
 async function fetchCryptoList() {
 	try {
 		//show loading
 		$(".table-loader").removeClass("d-none")
 		//fetch crypto prices using axios from coinapi REST API
-		const resp = await axios.get("https://rest.coinapi.io/v1/symbols?filter_exchange_id=BINANCE&filter_symbol_id=BINANCE_SPOT_&filter_asset_id=USDT", {
+		//https://pro-api.coinmarketcap.com
+		const resp = await axios.get("https://sandbox-api.coinmarketcap.com/v1/cryptocurrency/listings/latest", {
 			headers: {
-				"X-CoinAPI-Key": "7FB087E8-F059-4F29-89AF-865F8283F11F"
+				"X-CMC_PRO_API_KEY": "f5c41f87-276c-4f7f-8beb-8fa0e59949de"
 			}
 		}) //use of async await
-		if (Array.isArray(resp.data) && resp.data?.length) { //check if we have valid response as array
-			let cryptoData = [...resp.data]
-			//filter non priced data
-			cryptoData = cryptoData.filter(data => data.price)
-			//sort based on prices
-			cryptoData.sort((a, b) => b.price - a.price);
-
+		if (Array.isArray(resp.data?.data) && resp.data?.data?.length) { //check if we have valid response as array
+			cryptoData = [...resp.data.data]
+			
 			//append rows in the table
 			$.each(cryptoData, function (i, item) {
+				const change = item.quote?.USD?.percent_change_1h
 				let $tr = $(`<tr class="${i == 0 ? "highlight" : ""}">`).append(
-					$('<td>').text(`${item.asset_id_base}/${item.asset_id_quote}`),
-					$('<td class="price">').text(`$${item.price}`),
-					$('<td class="ticker d-none">').text(item.symbol_id_exchange),
+					$('<td>').text(item.name),
+					$('<td class="price">').text(`$${item.quote?.USD?.price?.toFixed(2)}`),
+					$('<td class="volume">').text(`${item.quote?.USD?.volume_24h?.toFixed(2)}`),
+					$(`<td class="change_percentage ${change > 0 ? "text-success" : "text-danger"}">`).text(`${change?.toFixed(2)}%`), //change color based on percentage change
+					$('<td class="ticker d-none">').text(item.symbol),
 				);
 				$tr.wrap('<p>').html();
 				$tr.appendTo('#crypTable')
@@ -32,7 +33,7 @@ async function fetchCryptoList() {
 			new TradingView.widget(
 				{
 					"autosize": true,
-					"symbol": cryptoData[0].symbol_id_exchange,
+					"symbol": cryptoData[0].symbol,
 					"interval": "D",
 					"timezone": "SGT/UTC",
 					"theme": "dark",
@@ -54,6 +55,7 @@ $(document).ready(function () {
 });
 $('#crypTable').on('click', 'tbody tr', function (event) {
 	var ticker = $(event.target).closest('tr').find(".ticker").html();
+	//reload tradingview instance with selected ticker
 	new TradingView.widget(
 		{
 			"autosize": true,
@@ -70,4 +72,14 @@ $('#crypTable').on('click', 'tbody tr', function (event) {
 		}
 	);
 	$(this).addClass('highlight').siblings().removeClass('highlight');
+});
+$("#search_text").keyup(function(event) {
+  let text = $(this).val();
+	let tempData = []
+	if(text.length){
+
+		console.log(cryptoData.filter(d => d.asset_id_base.toLowerCase().includes(text.toLowerCase())))
+	}else{
+		tempData = cryptoData
+	}
 });

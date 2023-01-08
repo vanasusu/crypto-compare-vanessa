@@ -9,6 +9,8 @@
 		integrity="sha384-gH2yIJqKdNHPEq0n4Mqa/HGKIhSkIHeL5AyhkYV8i59U5AR6csBvApHHNl/vI1Bx" crossorigin="anonymous">
 	<link rel="stylesheet" href="assets/css/style.css">
 	<link rel="icon" type="image/x-icon" href="/assets/images/logo.png">
+	<!-- FontAwesome Icons -->
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.1/css/all.min.css" integrity="sha512-MV7K8+y+gLIBoVD59lQIYicR65iaqukzvf/nwasF0nqhPay5w/9lJmVM2hMDcnK1OnMGCdVK+iQrJ7lzPJQd1w==" crossorigin="anonymous" referrerpolicy="no-referrer" />
 </head>
 
 <body>
@@ -35,8 +37,21 @@
 					</li>
 				</ul>
 				<form class="d-flex" role="search">
-					<input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
-					<button class="btn btn-outline-success" type="submit">Search</button>
+					<input 
+						class="form-control me-2" 
+						type="search" 
+						placeholder="Search Crypto" 
+						aria-label="Search"
+						id="search_text"
+					>
+					<button 
+						class="btn btn-outline-success d-flex justify-content-between align-items-center" 
+						type="button"
+						onclick="fetchCryptoList()"
+					>
+					<i class="fa-solid fa-arrows-rotate" style="margin-right: 10px"></i>
+					Refresh
+					</button>
 				</form>
 			</div>
 		</div>
@@ -53,6 +68,8 @@
 							<tr class="table-success">
 								<th scope="col">Ticker</th>
 								<th scope="col">Price</th>
+								<th scope="col">24h Volume</th>
+								<th scope="col">1h Change(%)</th>
 							</tr>
 						</thead>
 						<tbody>
@@ -90,6 +107,8 @@
 	<script type="text/javascript" src="https://s3.tradingview.com/tv.js"></script>
 	<!-- axios -->
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.2.2/axios.min.js" integrity="sha512-QTnb9BQkG4fBYIt9JGvYmxPpd6TBeKp6lsUrtiVQsrJ9sb33Bn9s0wMQO9qVBFbPX3xHRAsBHvXlcsrnJjExjg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+	<!-- FontAwesome icon -->
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.1/js/all.min.js" integrity="sha512-rpLlll167T5LJHwp0waJCh3ZRf7pO6IT1+LZOhAyP6phAirwchClbTZV3iqL3BMrVxIYRbzGTpli4rfxsCK6Vw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 	<!-- Custom JS script -->
 	<script src="assets/js/main.js"></script>
 </body>
