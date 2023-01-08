@@ -8,3 +8,18 @@ body {
 .logo {
   height: 90px;
 }
+.table-wrapper {
+  height: 450px;
+  overflow-y: auto;
+}
+.table-success th{
+  background-color: #4fa060 !important;
+  color: #fff;
+  border-bottom-width: 0
+}
+.table tbody tr.highlight {
+  border: 1px solid;
+}
+#tradingview_main {
+  height: 450px;
+}
