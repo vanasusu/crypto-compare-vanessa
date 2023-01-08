@@ -79,7 +79,7 @@ async function fetchCryptoList() {
 		$(".table-loader").removeClass("d-none")
 		//fetch crypto prices using axios from coinapi REST API
 		//https://sandbox-api.coinmarketcap.com
-		const resp = await axios.get("https://sandbox-api.coinmarketcap.com/v1/cryptocurrency/listings/latest", {
+		const resp = await axios.get("https://pro-api.coinmarketcap.com/v1/cryptocurrency/listings/latest", {
 			headers: {
 				"X-CMC_PRO_API_KEY": "f5c41f87-276c-4f7f-8beb-8fa0e59949de"
 			}
